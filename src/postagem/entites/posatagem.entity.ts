@@ -1,7 +1,20 @@
 import { Transform, TransformFnParams } from "class-transformer";
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Repository, UpdateDateColumn } from "typeorm";
+import { Tema } from "../../tema/entities/tema.entities";
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TemaService } from "../../tema/services/tema.service";
 
+
+/*@Injectable()
+export class PostagemService {
+    constructor(
+        @InjectRepository(Postagem)
+        private postagemRepository: Repository<Postagem>,
+        private temaService:TemaService
+    ){}
+}*/
 
 @Entity({name: "tb_postagens"}) // create table tb_postagem
 export class Postagem{
@@ -22,4 +35,9 @@ export class Postagem{
 
 @UpdateDateColumn() // Atualiza a  data na criação 
     data: Date;
+
+    @ManyToOne(()=> Tema, (tema) => tema.postagem, {
+        onDelete: "CASCADE"
+    })
+    tema: Tema
 }

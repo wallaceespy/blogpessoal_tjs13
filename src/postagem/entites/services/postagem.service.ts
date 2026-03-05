@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
+import { TemaService } from "../../../tema/services/tema.service";
 import { Postagem } from "../posatagem.entity";
 import { DeleteResult } from "typeorm/browser";
 
@@ -9,15 +10,21 @@ import { DeleteResult } from "typeorm/browser";
 
 @Injectable()
 export class PostagemService{
+    
 
     constructor(
         @InjectRepository(Postagem)
         private postagemRepository: Repository<Postagem>,
+        private temaService:TemaService
     ){}
 
     async findAll(): Promise<Postagem[]>{
         // select * from tb_postagem
-        return this.postagemRepository.find();
+        return await this.postagemRepository.find({
+            relations:{
+                tema: true
+            }
+        });
     }
 
     async findById(id: number): Promise<Postagem>{
@@ -25,8 +32,11 @@ export class PostagemService{
         const postagem = await this.postagemRepository.findOne({
             where:{
                 id
+            },
+            relations: {
+                tema: true
             }
-        })
+        });
 
         if(!postagem)
             throw new HttpException('Postagem não encontrada!' , HttpStatus.NOT_FOUND);
@@ -39,6 +49,9 @@ export class PostagemService{
         return this.postagemRepository.find({
             where:{
                 titulo: ILike(`%${titulo}%`)
+            },
+            relations:{
+                tema: true
             }
     })
     }
@@ -49,10 +62,10 @@ export class PostagemService{
     } 
     async update(postagem: Postagem): Promise<Postagem>{
 
-        if (!postagem.id || postagem.id <= 0)
-            throw new HttpException("O Id da postagem é inválido!" , HttpStatus.BAD_REQUEST);
-
-        await this.findById(postagem.id);
+       /* if (!postagem.id || postagem.id <= 0)*/
+          /*  throw new HttpException("O Id da postagem é inválido!" , HttpStatus.BAD_REQUEST);*/
+        await this.findById(postagem.id)
+        await this.temaService.findById(postagem.tema.id);
         // UPDATE  tb_postagens SET titulo= ?,
         //  text = ?,
         // data = CURRENT_TIMESTAMP()
@@ -65,7 +78,7 @@ export class PostagemService{
 
         // DELETE tb_postagem FROM id = ?;
 
-        return this.postagemRepository.delete(id);
+        return await this.postagemRepository.delete(id);
     }
 }
 
