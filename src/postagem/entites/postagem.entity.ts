@@ -5,6 +5,7 @@ import { Tema } from "../../tema/entities/tema.entities";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TemaService } from "../../tema/services/tema.service";
+import { Usuario } from "../../usuario/entities/usuario.entity";
 
 
 /*@Injectable()
@@ -40,4 +41,11 @@ export class Postagem{
         onDelete: "CASCADE"
     })
     tema: Tema
+
+
+
+    @ManyToOne(()=> Usuario, (usuario) => usuario.postagem, {
+        onDelete: "CASCADE"
+    })
+    usuario: Usuario;
 }

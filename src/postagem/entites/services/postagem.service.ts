@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
 import { TemaService } from "../../../tema/services/tema.service";
-import { Postagem } from "../posatagem.entity";
+import { Postagem } from "../postagem.entity";
 import { DeleteResult } from "typeorm/browser";
 
 
@@ -15,14 +15,15 @@ export class PostagemService{
     constructor(
         @InjectRepository(Postagem)
         private postagemRepository: Repository<Postagem>,
-        private temaService:TemaService
+        private readonly temaService:TemaService
     ){}
 
     async findAll(): Promise<Postagem[]>{
         // select * from tb_postagem
         return await this.postagemRepository.find({
             relations:{
-                tema: true
+                tema: true,
+                usuario: true
             }
         });
     }
@@ -34,7 +35,9 @@ export class PostagemService{
                 id
             },
             relations: {
-                tema: true
+                tema: true,
+             usuario: true
+
             }
         });
 
@@ -51,7 +54,9 @@ export class PostagemService{
                 titulo: ILike(`%${titulo}%`)
             },
             relations:{
-                tema: true
+                tema: true,
+            usuario: true
+
             }
     })
     }
@@ -64,7 +69,11 @@ export class PostagemService{
 
        /* if (!postagem.id || postagem.id <= 0)*/
           /*  throw new HttpException("O Id da postagem é inválido!" , HttpStatus.BAD_REQUEST);*/
+
+          //Checa se a postagem existe
         await this.findById(postagem.id)
+        //Checa se o tema da postagem existe
+        
         await this.temaService.findById(postagem.tema.id);
         // UPDATE  tb_postagens SET titulo= ?,
         //  text = ?,

@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Postagem } from "../../postagem/entites/posatagem.entity";
+import { Postagem } from "../../postagem/entites/postagem.entity";
 
 
 @Entity({name: "tb_temas"})
