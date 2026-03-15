@@ -14,15 +14,13 @@ export class Usuario {
     @Column({length: 255, nullable: false}) 
     nome: string
 
-        @Transform(({ value }: TransformFnParams) => value?.trim()) // Remover espaço em branco inicio e fim ...Tranformaçao em valor
-    
+    @Transform(({ value }: TransformFnParams) => value?.trim()) // Remover espaço em branco inicio e fim ...Tranformaçao em valor
     @IsEmail()
     @IsNotEmpty()
     @Column({length: 255, nullable: false })
     usuario: string
 
-        @Transform(({ value }: TransformFnParams) => value?.trim()) // Remover espaço em branco inicio e fim ...Tranformaçao em valor
-    
+    @Transform(({ value }: TransformFnParams) => value?.trim()) // Remover espaço em branco inicio e fim ...Tranformaçao em valor
     @MinLength(8)
     @IsNotEmpty()
     @Column({length: 255, nullable: false }) 
@@ -31,6 +29,7 @@ export class Usuario {
     @Column({length: 5000 }) 
     foto: string
 
+    //
     @OneToMany(() => Postagem, (postagem) => postagem.usuario)
     postagem: Postagem[]
 
